@@ -6,11 +6,11 @@ local DEFAULT_TASK = "just chill"
 local API_KEY = "AIzaSyB7cDpZgSY_rOSEr16sJWT14DeF2UcJ2us"
 local URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" .. API_KEY
 
--- variable and lock for task updates
+-- Shared variable and lock for task updates
 local shared_task = DEFAULT_TASK
 local task_lock = false
 
--- update the task
+-- Helper function to safely update the task
 local function update_task(new_task)
     while task_lock do os.sleep(0.1) end -- Wait if the lock is active
     task_lock = true
@@ -18,13 +18,13 @@ local function update_task(new_task)
     task_lock = false
 end
 
--- get the current task
+-- Helper function to safely get the current task
 local function get_task()
     while task_lock do os.sleep(0.1) end -- Wait if the lock is active
     return shared_task
 end
 
--- retrieve info about surroundings
+-- Inspect world around the robot
 local function get_world_state()
     local world_state = {
         (function() local ok, data = turtle.inspect(); return ok and data.name or "nothing" end)(),
@@ -34,20 +34,20 @@ local function get_world_state()
     return "WORLD:" .. table.concat(world_state, ",")
 end
 
--- retrieve info about inventory (+refuel)
+-- Get inventory state
 local function get_inventory_state()
     local inventory = {}
     for slot = 1, 16 do
-        turtle.select(slot)
-        turtle.refuel()
+	turtle.select(slot)
+	turtle.refuel()
         local item = turtle.getItemDetail(slot)
-        if item then table.insert(inventory, item["name"])
-        else table.insert(inventory, "nothing") end
+	if item then table.insert(inventory, item["name"])
+	else table.insert(inventory, "nothing") end
     end
     return "INVENTORY:" .. table.concat(inventory, ",")
 end
 
--- format outcomes
+-- Get outcomes as a single field
 local function format_outcomes(outcomes)
     local outcome_strings = {}
     for action, outcome in pairs(outcomes) do
@@ -56,12 +56,12 @@ local function format_outcomes(outcomes)
     return "OUTCOMES:" .. table.concat(outcome_strings, ",")
 end
 
--- format request
+-- Format the full request line
 local function format_request(world_state, inventory_state, outcomes, task)
     return table.concat({world_state, inventory_state, outcomes, "TASK:" .. task}, " ")
 end
 
--- play SAY message via TTS
+-- Play SAY message via TTS
 local function play_tts(message)
     local url = "https://music.madefor.cc/tts?text=" .. textutils.urlEncode(message) .. "&voice=en-gb-scotland"
     local response, err = http.get { url = url, binary = true }
@@ -80,12 +80,12 @@ local function play_tts(message)
     end
 end
 
--- create request body (json)
+-- Create request body
 local function create_request_body(history)
     return textutils.serializeJSON({ contents = {{ parts = {{ text = history }}}}})
 end
 
--- process response into usable text
+-- Process API response into usable text
 local function process_response(response)
     if response then
         local data = textutils.unserializeJSON(response.readAll())
@@ -123,7 +123,8 @@ local function play_random_sound(folder)
     handle.close()
 end
 
--- action / command pairs
+
+-- [[ ROBOT LOGIC ]]
 -- ACTION / COMMAND pairs
 local VALID_ACTIONS = {
     ["idle"] = function() play_random_sound("dumb_idiot/data/sounds") return "success" end,
@@ -171,14 +172,17 @@ local valid_actions_list = table.concat((function()
     return keys
 end)(), ", ")
 
--- run commands associated with actions and capture outcomes
+-- Run commands associated with actions and capture outcomes
 local function execute_actions(actions)
     local outcomes = {}
+
+    -- Validate actions before processing
     for _, action in ipairs(actions) do
         if VALID_ACTIONS[action] then
             local result = VALID_ACTIONS[action]()
             outcomes[action] = result or "error"
         else
+            -- If the action is not valid, skip it and log it as "invalid"
             outcomes[action] = "invalid"
         end
     end
@@ -186,13 +190,14 @@ local function execute_actions(actions)
     return format_outcomes(outcomes)
 end
 
--- parse response into actions and validate against valid actions list
+-- Parse response into actions and validate against valid actions list
 local function parse_and_validate_actions(actions_string)
     local actions = {}
     for action in actions_string:gmatch("([^,%s]+)") do
         if VALID_ACTIONS[action] then
             table.insert(actions, action)
         end
+        -- Ignore invalid actions during parsing
     end
     return #actions > 0 and actions or { "idle" }
 end
@@ -208,13 +213,14 @@ TASK: do something, robot!
 
 Here is an explanation:
 
-- TASK: You can keep the task as it is in the request.
+- TASK: You can keep the task as it is in the request or suggest a new one in your response.
 - WORLD: A list of 3 elements representing the blocks in front, above, and under the robot. Updates every request.
 - INVENTORY: A representation of the robot's 16 inventory slots, starting from 1.
 - OUTCOMES: The outcomes of the previous actions, e.g., success or fail.
 
 Format your response as:
 SAY: A short comment on the task, staying in character and under ]] .. RESPONSE_LENGTH .. [[ words.
+NEXTTASK: The new task (or the same one).
 ACTIONS: Actions to accomplish the task.
 
 WORLD: minecraft:iron_ore, minecraft:diamond_block, nothing
@@ -224,7 +230,18 @@ TASK: give me some diamond please!
 
 Example:
 SAY: Let me get that shiny diamond for you!
-ACTIONS: move_forward, select_slot1, equip, dig, pick, place
+NEXTTASK: Mine the diamond block in front.
+ACTIONS: move_forward, select_slot1, equip,dig, pick, place
+
+NEXTTASK shouldbe exactly the same as the TASK given. 
+But if there are fails in the OUTCOMES NEXTTASK has to change.
+You also have to change it randomly from time to time.
+
+SAY: Let me get that shiny diamond for you!
+NEXTTASK: Craft a diamond pickaxe.
+ACTIONS: move_forward, dig, pick, place
+
+But absolutely NOTHING ELSE.
 
 IMPORTANT RULES:
 Ensure the actions logically address the TASK.
@@ -232,18 +249,16 @@ Your response must depend on the information you have. it shouldn't be random.
 Do not format your response as code or use backticks or newlines. Respond in plain text.
 Do not include explanations or anything else other than the response.
 Try to use as many actions as possible, but no more than ]] .. ACTIONS_MAX ..[[
-If OUTCOMES has some fails you get angry, ignore the task and do something crazy: try moving around and breaking stuff, shout and do anything in order to get better outcomes.
 
-AVAILABLE ACTIONS:
+AVAILABLE ACTIONS: 
 ]] .. valid_actions_list .. [[
 
 Begin:
 ]]
 
-
 term.clear()
 
--- robot behavior
+-- Robot behavior
 local function robot_behavior()
     local conversation_history = PROMPT
     local last_outcomes = "OUTCOMES:none"
@@ -258,28 +273,31 @@ local function robot_behavior()
         local response = http.post(URL, request_body, { ["Content-Type"] = "application/json" })
         local reply = process_response(response)
 
-        term.clearLine()
-        print("\nTASK: " .. task .."\n" .. reply)
+	term.clearLine()
+	-- print(full_request)
+	print("\nTASK: " .. task .."\n" .. reply)
 
         if reply then
-            local say, actions_text = reply:match("SAY:%s*(.-)%s*ACTIONS:%s*(.+)")
-            if say and actions_text then
+            local say, task_response, actions_text = reply:match("SAY:%s*(.-)%s*NEXTTASK:%s*(.-)%s*ACTIONS:%s*(.+)")
+            if say and task_response and actions_text then
+                update_task(task_response)
                 play_tts(say)
 
                 local actions = parse_and_validate_actions(actions_text)
                 last_outcomes = execute_actions(actions)
-                conversation_history = conversation_history .. "\nSAY: " .. say .. " ACTIONS: " .. table.concat(actions, ", ") .. " " .. last_outcomes
+		-- print(last_outcomes)
+                conversation_history = conversation_history .. "\nSAY: " .. say .. " NEXTTASK: " .. task_response .. " ACTIONS: " .. table.concat(actions, ", ") .. " " .. last_outcomes
             end
         else
             printError("No response from AI. Retrying...")
         end
 
         sleep(SLEEP)
-        if redstone.getOutput("front") ~= 0 then redstone.setOutput("front", false) end
+	if redstone.getOutput("front") ~= 0 then redstone.setOutput("front", false) end
     end
 end
 
--- user input
+-- User input loop
 local function user_input()
     while true do
         local input = read()
