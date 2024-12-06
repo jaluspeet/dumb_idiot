@@ -95,19 +95,39 @@ end
 
 -- ACTION / COMMAND pairs
 local VALID_ACTIONS = {
-    ["idle"] = function() return "success" end,
-    ["move_forward"] = function() return turtle.forward() and "success" or "fail" end,
-    ["move_back"] = function() return turtle.back() and "success" or "fail" end,
-    ["move_up"] = function() return turtle.up() and "success" or "fail" end,
-    ["move_down"] = function() return turtle.down() and "success" or "fail" end,
-    ["turn_left"] = function() return turtle.turnLeft() and "success" or "fail" end,
-    ["turn_right"] = function() return turtle.turnRight() and "success" or "fail" end,
-    ["dig"] = function() return turtle.dig() and "success" or "fail" end,
-    ["place"] = function() return turtle.place() and "success" or "fail" end,
-    ["drop"] = function() return turtle.drop() and "success" or "fail" end,
-    ["pick"] = function() return turtle.suck() and "success" or "fail" end,
-    ["attack"] = function() return turtle.attack() and "success" or "fail" end,
-    ["poop_pants"] = function() play_tts("prrrrrrrrrrrrrrrrrrrrooottttt!!!") return "success" end,
+    ["idle"] = function() play_random_sound("dumb_idiot/data/sounds") return "success" end,
+
+    ["move_forward"] = function() if turtle.forward() then return "success" else return "fail" end end,
+    ["move_back"] = function() if turtle.back() then return "success" else return "fail" end end,
+    ["move_up"] = function() if turtle.up() then return "success" else return "fail" end end,
+    ["move_down"] = function() if turtle.down() then return "success" else return "fail" end end,
+    ["turn_left"] = function() if turtle.turnLeft() then return "success" else return "fail" end end,
+    ["turn_right"] = function() if turtle.turnRight() then return "success" else return "fail" end end,
+
+    ["dig"] = function() if turtle.dig() then return "success" else return "fail" end end,
+    ["place"] = function() if turtle.place() then return "success" else return "fail" end end,
+    ["drop"] = function() if turtle.drop() then return "success" else return "fail" end end,
+    ["pick"] = function() if turtle.suck() then return "success" else return "fail" end end,
+    ["attack"] = function() if turtle.attack() then return "success" else return "fail" end end,
+    ["poop_pants"] = function() if play_tts("prrrrrrrrrrrrrrrrrrrrooottttt!!!") then return "success" else return "fail" end end,
+
+    ["select_slot1"] = function() if turtle.select(1) then return "success" else return "fail" end end,
+    ["select_slot2"] = function() if turtle.select(2) then return "success" else return "fail" end end,
+    ["select_slot3"] = function() if turtle.select(3) then return "success" else return "fail" end end,
+    ["select_slot4"] = function() if turtle.select(4) then return "success" else return "fail" end end,
+    ["select_slot5"] = function() if turtle.select(5) then return "success" else return "fail" end end,
+    ["select_slot6"] = function() if turtle.select(6) then return "success" else return "fail" end end,
+    ["select_slot7"] = function() if turtle.select(7) then return "success" else return "fail" end end,
+    ["select_slot8"] = function() if turtle.select(8) then return "success" else return "fail" end end,
+    ["select_slot9"] = function() if turtle.select(9) then return "success" else return "fail" end end,
+    ["select_slot10"] = function() if turtle.select(10) then return "success" else return "fail" end end,
+    ["select_slot11"] = function() if turtle.select(11) then return "success" else return "fail" end end,
+    ["select_slot12"] = function() if turtle.select(12) then return "success" else return "fail" end end,
+    ["select_slot13"] = function() if turtle.select(13) then return "success" else return "fail" end end,
+    ["select_slot14"] = function() if turtle.select(14) then return "success" else return "fail" end end,
+    ["select_slot15"] = function() if turtle.select(15) then return "success" else return "fail" end end,
+    ["select_slot16"] = function() if turtle.select(16) then return "success" else return "fail" end end,
+    ["equip"] = function() if turtle.equipLeft() then return "success" else return "fail" end end,
 }
 
 -- actions list to comma-separated (used in PROMPT)
