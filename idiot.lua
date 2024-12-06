@@ -124,6 +124,7 @@ local function play_random_sound(folder)
 end
 
 -- action / command pairs
+-- ACTION / COMMAND pairs
 local VALID_ACTIONS = {
     ["idle"] = function() play_random_sound("dumb_idiot/data/sounds") return "success" end,
 
@@ -141,6 +142,24 @@ local VALID_ACTIONS = {
     ["attack"] = function() if turtle.attack() then return "success" else return "fail" end end,
     ["poop_pants"] = function() if play_tts("prrrrrrrrrrrrrrrrrrrrooottttt!!!") then return "success" else return "fail" end end,
     ["send_impulse"] = function() redstone.setOutput("front", true) return "success" end,
+
+    ["select_slot1"] = function() if turtle.select(1) then return "success" else return "fail" end end,
+    ["select_slot2"] = function() if turtle.select(2) then return "success" else return "fail" end end,
+    ["select_slot3"] = function() if turtle.select(3) then return "success" else return "fail" end end,
+    ["select_slot4"] = function() if turtle.select(4) then return "success" else return "fail" end end,
+    ["select_slot5"] = function() if turtle.select(5) then return "success" else return "fail" end end,
+    ["select_slot6"] = function() if turtle.select(6) then return "success" else return "fail" end end,
+    ["select_slot7"] = function() if turtle.select(7) then return "success" else return "fail" end end,
+    ["select_slot8"] = function() if turtle.select(8) then return "success" else return "fail" end end,
+    ["select_slot9"] = function() if turtle.select(9) then return "success" else return "fail" end end,
+    ["select_slot10"] = function() if turtle.select(10) then return "success" else return "fail" end end,
+    ["select_slot11"] = function() if turtle.select(11) then return "success" else return "fail" end end,
+    ["select_slot12"] = function() if turtle.select(12) then return "success" else return "fail" end end,
+    ["select_slot13"] = function() if turtle.select(13) then return "success" else return "fail" end end,
+    ["select_slot14"] = function() if turtle.select(14) then return "success" else return "fail" end end,
+    ["select_slot15"] = function() if turtle.select(15) then return "success" else return "fail" end end,
+    ["select_slot16"] = function() if turtle.select(16) then return "success" else return "fail" end end,
+    ["equip"] = function() if turtle.equipLeft() then return "success" else return "fail" end end,
 }
 
 -- actions list to comma-separated (used in PROMPT)
