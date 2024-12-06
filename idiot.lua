@@ -1,8 +1,8 @@
 -- [[ CONFIG ]]
 local RESPONSE_LENGTH = 10
 local ACTIONS_MAX = 10
-local SLEEP = 5
-local DEFAULT_TASK = "Expect a new task"
+local SLEEP = 1
+local DEFAULT_TASK = "Go make some friends"
 local API_KEY = "AIzaSyB7cDpZgSY_rOSEr16sJWT14DeF2UcJ2us"
 local URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" .. API_KEY
 
@@ -92,39 +92,39 @@ end
 
 -- ACTION / COMMAND pairs
 local VALID_ACTIONS = {
-    ["idle"] = function() play_random_sound("dumb_idiot/data/sounds") end,
+    ["idle"] = function() if play_random_sound("dumb_idiot/data/sounds") then return "success" else return "fail" end end,
 
-    ["move_forward"] = function() print("> move_forward"); return turtle.forward() end,
-    ["move_back"] = function() print("> move_back"); return turtle.back() end,
-    ["move_up"] = function() print("> move_up"); return turtle.up() end,
-    ["move_down"] = function() print("> move_down"); return turtle.down() end,
-    ["turn_left"] = function() print("> turn_left"); return turtle.turnLeft() end,
-    ["turn_right"] = function() print("> turn_right"); return turtle.turnRight() end,
+    ["move_forward"] = function() print("> move_forward"); if turtle.forward() then return "success" else return "fail" end end,
+    ["move_back"] = function() print("> move_back"); if turtle.back() then return "success" else return "fail" end end,
+    ["move_up"] = function() print("> move_up"); if turtle.up() then return "success" else return "fail" end end,
+    ["move_down"] = function() print("> move_down"); if turtle.down() then return "success" else return "fail" end end,
+    ["turn_left"] = function() print("> turn_left"); if turtle.turnLeft() then return "success" else return "fail" end end,
+    ["turn_right"] = function() print("> turn_right"); if turtle.turnRight() then return "success" else return "fail" end end,
 
-    ["dig"] = function() print("> dig"); return turtle.dig() end,
-    ["place"] = function() print("> place"); return turtle.place() end,
-    ["drop"] = function() print("> drop"); return turtle.drop() end,
-    ["pick"] = function() print("> pick"); return turtle.suck() end,
-    ["attack"] = function() print("> attack"); return turtle.attack() end,
-    ["poop_pants"] = function() print("> poop_pants"); play_tts("prrrrrrrrrrrrrrrrrrrrooottttt!!!") return "nice poop" end,
+    ["dig"] = function() print("> dig"); if turtle.dig() then return "success" else return "fail" end end,
+    ["place"] = function() print("> place"); if turtle.place() then return "success" else return "fail" end end,
+    ["drop"] = function() print("> drop"); if turtle.drop() then return "success" else return "fail" end end,
+    ["pick"] = function() print("> pick"); if turtle.suck() then return "success" else return "fail" end end,
+    ["attack"] = function() print("> attack"); if turtle.attack() then return "success" else return "fail" end end,
+    ["poop_pants"] = function() if play_tts("prrrrrrrrrrrrrrrrrrrrooottttt!!!") then return "success" else return "fail" end end,
 
-    ["select_slot1"] = function() print("select_slot1"); return turtle.select(1) end,
-    ["select_slot2"] = function() print("select_slot2"); return turtle.select(2) end,
-    ["select_slot3"] = function() print("select_slot3"); return turtle.select(3) end,
-    ["select_slot4"] = function() print("select_slot4"); return turtle.select(4) end,
-    ["select_slot5"] = function() print("select_slot5"); return turtle.select(5) end,
-    ["select_slot6"] = function() print("select_slot6"); return turtle.select(6) end,
-    ["select_slot7"] = function() print("select_slot7"); return turtle.select(7) end,
-    ["select_slot8"] = function() print("select_slot8"); return turtle.select(8) end,
-    ["select_slot9"] = function() print("select_slot9"); return turtle.select(9) end,
-    ["select_slot10"] = function() print("select_slot10"); return turtle.select(10) end,
-    ["select_slot11"] = function() print("select_slot11"); return turtle.select(11) end,
-    ["select_slot12"] = function() print("select_slot12"); return turtle.select(12) end,
-    ["select_slot13"] = function() print("select_slot13"); return turtle.select(13) end,
-    ["select_slot14"] = function() print("select_slot14"); return turtle.select(14) end,
-    ["select_slot15"] = function() print("select_slot15"); return turtle.select(15) end,
-    ["select_slot16"] = function() print("select_slot16"); return turtle.select(16) end,
-    ["equip"] = function() local item = turtle.getItemDetail() if item then print("equip: " .. item.name) return turtle.equipLeft() end end,
+    ["select_slot1"] = function() print("select_slot1"); if turtle.select(1) then return "success" else return "fail" end end,
+    ["select_slot2"] = function() print("select_slot2"); if turtle.select(2) then return "success" else return "fail" end end,
+    ["select_slot3"] = function() print("select_slot3"); if turtle.select(3) then return "success" else return "fail" end end,
+    ["select_slot4"] = function() print("select_slot4"); if turtle.select(4) then return "success" else return "fail" end end,
+    ["select_slot5"] = function() print("select_slot5"); if turtle.select(5) then return "success" else return "fail" end end,
+    ["select_slot6"] = function() print("select_slot6"); if turtle.select(6) then return "success" else return "fail" end end,
+    ["select_slot7"] = function() print("select_slot7"); if turtle.select(7) then return "success" else return "fail" end end,
+    ["select_slot8"] = function() print("select_slot8"); if turtle.select(8) then return "success" else return "fail" end end,
+    ["select_slot9"] = function() print("select_slot9"); if turtle.select(9) then return "success" else return "fail" end end,
+    ["select_slot10"] = function() print("select_slot10"); if turtle.select(10) then return "success" else return "fail" end end,
+    ["select_slot11"] = function() print("select_slot11"); if turtle.select(11) then return "success" else return "fail" end end,
+    ["select_slot12"] = function() print("select_slot12"); if turtle.select(12) then return "success" else return "fail" end end,
+    ["select_slot13"] = function() print("select_slot13"); if turtle.select(13) then return "success" else return "fail" end end,
+    ["select_slot14"] = function() print("select_slot14"); if turtle.select(14) then return "success" else return "fail" end end,
+    ["select_slot15"] = function() print("select_slot15"); if turtle.select(15) then return "success" else return "fail" end end,
+    ["select_slot16"] = function() print("select_slot16"); if turtle.select(16) then return "success" else return "fail" end end,
+    ["equip"] = function() if turtle.equipLeft() then return "success" else return "fail" end end,
 }
 
 -- actions list to comma-separated (used in PROMPT)
@@ -154,24 +154,11 @@ local function execute_actions(actions)
     local outcomes = {}
     for _, action in ipairs(actions) do
         if VALID_ACTIONS[action] then
-            -- Capture the return value of the action
-            local status, result = pcall(VALID_ACTIONS[action])
-            if status then
-                if type(result) == "boolean" then
-                    outcomes[action] = result and "true" or "false"
-                elseif type(result) == "string" then
-                    outcomes[action] = result
-                elseif result == nil then
-                    outcomes[action] = "nil"
-                else
-                    outcomes[action] = tostring(result)
-                end
-            else
-                outcomes[action] = "error: " .. tostring(result)
-            end
+            status, result = pcall(VALID_ACTIONS[action])
+            outcomes[action] = result
         end
     end
-    -- Format outcomes as a string
+
     local outcome_strings = {}
     for action, outcome in pairs(outcomes) do
         table.insert(outcome_strings, string.format('%s:"%s"', action, tostring(outcome)))
@@ -194,7 +181,7 @@ here is an explanation:
 WORLD: A list of 3 elements representing the blocks in front, above, and under the robot.
 At each new request, this list is updated.
 INVENTORY: The content of the 16 slots of the robot's inventory
-OUTCOMES: the return values of your previous actions, so that you know if and maybe even why they failed.
+OUTCOMES: the outcomes of your previous actions, so that you know if they failed.
 TASK: A natural language sentence that describes the robot's goal.
 It could happen that you have no TASK. If so, just decide one by yourself.
 
@@ -214,22 +201,26 @@ here is an example, your request is:
 
 WORLD: minecraft:iron_ore, minecraft:diamond_block, nothing
 INVENTORY: minecraft:iron_pickaxe, minecraft:acacia_slab, cobblestone, poop, nothing, nothing, nothing, nothing, nothing, nothing, nothing, nothing, nothing, nothing, minecraft:egg, nothing
-OUTCOMES: equip:"item is not equippable", dig:true
+OUTCOMES: equip:"SUCCESS", dig:"SUCCESS"
 TASK: give me some diamond please!
 
 For your response you should consider WORLD and you should choose up to ]] .. ACTIONS_MAX .. [[ actions that complete TASK.
 So this means your reply should be something like:
 
-SAY: Ok bossman! there's some big ass diamond block here. Do you also want an egg? i have a few.
+SAY: Ok bossman! there's some big ass diamond block here.
 ACTIONS: move_forward, dig, suck, select_slot4, drop
 
 And absolutely NOTHING ELSE.
 
 changing task:
-If the outcome you see is negative it means you previously failed, so you have to autonomously change the given TASK a bit in order to try a different approach.
-To do this, you have to put the NEWTASK tag in the SAY field this way:
+If the outcome you see is FAIL, for example:
 
-SAY: NEWTASK a variation of the current task, suggesting a new approach
+OUTCOMES: equip:"success", dig:"fail"
+
+or you dont like the assigned task you have to try a different approach.
+To do this, you have to put a NEWTASK tag in the SAY field, followed by your new self-assigned task:
+
+SAY: NEWTASK a new approach or a new task
 the new task will be fed back to you so you will have a different starting point at the next request
 
 Begin:
@@ -250,7 +241,6 @@ local function robot_behavior()
         if reply then
             local say, actions_text = reply:match("SAY:%s*(.-)%s*ACTIONS:%s*(.+)")
             if say and actions_text then
-                -- Check if SAY contains NEWTASK
                 local new_task = say:match("NEWTASK%s*%-[%s]*(.+)")
                 if new_task then
                     DEFAULT_TASK = new_task
@@ -261,9 +251,8 @@ local function robot_behavior()
                 end
 
                 local actions = parse_and_validate_actions(actions_text)
-                local outcomes = execute_actions(actions) -- Capture OUTCOMES
+                local outcomes = execute_actions(actions)
                 print(outcomes)
-                -- Update conversation history with OUTCOMES
                 conversation_history = conversation_history .. "\nAssistant: SAY: " .. say .. " ACTIONS: " .. table.concat(actions, ", ") .. " " .. outcomes
             end
         else
@@ -284,4 +273,5 @@ end
 
 -- start async
 parallel.waitForAny(robot_behavior, user_input)
+
 
